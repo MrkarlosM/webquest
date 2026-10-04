@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Nos engañan los gráficos? · WebQuest de Matemáticas, grado 9.º</title>
+<meta name="description" content="WebQuest de Matemáticas para grado 9.º: detectives de datos sobre la brecha digital en Colombia. Investigación con datos del DANE sobre gráficos correctos pero engañosos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800;1,6..12,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --graphite:#3c3744; --navy:#090c9b; --azure:#3d52d5; --powder:#b4c5e4; --ivory:#fbfff1;
+  --paper:var(--ivory); --card:#ffffff; --panel:#e6edf7; --panel-2:#d4deef;
+  --ink:var(--graphite); --ink-2:#5b5666; --ink-3:#7d7889;
+  --line:#c7d2e6;
+  --accent:var(--azure); --accent-ink:var(--navy);
+  --ok:var(--azure); --ok-bg:#e6edf7;
+  --warn:var(--graphite); --warn-bg:#ecebee;
+  --btn:var(--navy); --btn-ink:#ffffff;
+  --mark-bg:var(--powder); --mark-ink:var(--navy);
+  --focus:var(--azure);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1c1921; --card:#2a2631; --panel:#353040; --panel-2:#413b4e;
+    --ink:var(--ivory); --ink-2:var(--powder); --ink-3:#9aa3b8;
+    --line:#4a4457;
+    --accent:#8593ee; --accent-ink:#1c1921;
+    --ok:#8593ee; --ok-bg:#262d52;
+    --warn:var(--powder); --warn-bg:#33303d;
+    --btn:var(--azure); --btn-ink:#ffffff;
+    --mark-bg:#2b3ab0; --mark-ink:#ffffff;
+    --focus:var(--azure);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1c1921; --card:#2a2631; --panel:#353040; --panel-2:#413b4e;
+  --ink:var(--ivory); --ink-2:var(--powder); --ink-3:#9aa3b8;
+  --line:#4a4457;
+  --accent:#8593ee; --accent-ink:#1c1921;
+  --ok:#8593ee; --ok-bg:#262d52;
+  --warn:var(--powder); --warn-bg:#33303d;
+  --btn:var(--azure); --btn-ink:#ffffff;
+  --mark-bg:#2b3ab0; --mark-ink:#ffffff;
+  --focus:var(--azure);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(64px + env(safe-area-inset-top,0px));height:100%}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);
+  font-family:"Nunito Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:1.0625rem;line-height:1.55;-webkit-text-size-adjust:100%}
+h1,h2,h3,h4{color:var(--navy);line-height:1.15;margin:0 0 .5em;font-weight:800;letter-spacing:-.015em}
+h1{font-size:clamp(2.1rem,5vw,3.4rem)}
+h2{font-size:clamp(1.6rem,3.2vw,2.3rem)}
+h3{font-size:1.3rem;margin-top:1.6em;font-weight:700}
+h4{font-size:1.1rem;margin-top:1.2em;font-weight:700}
+p{margin:0 0 1em;max-width:70ch}
+ul,ol{padding-left:1.3em;max-width:70ch}
+li{margin:.3em 0}
+a{color:var(--ink);text-decoration-color:var(--azure);text-decoration-thickness:.1em;text-underline-offset:.15em}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- barra superior + menú lateral (hamburguesa) ---------- */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:.9rem;height:64px;padding:0 1rem;padding-top:env(safe-area-inset-top,0px);background:var(--navy);color:var(--ivory);border-bottom:3px solid var(--azure)}
+.top .title{font-weight:800;font-size:1.05rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .title small{display:block;font-weight:400;font-size:.8rem;color:var(--powder);margin-top:.15rem}
+.top .where{margin-left:auto;font-size:.9rem;color:var(--powder);font-weight:700;white-space:nowrap}
+.burger{width:44px;height:44px;flex:0 0 44px;border:0;border-radius:10px;background:transparent;color:var(--ivory);cursor:pointer;display:grid;place-items:center;padding:0}
+.burger:hover{background:var(--azure)}
+.burger span{display:block;width:22px;height:2px;background:currentColor;border-radius:2px;position:relative;transition:transform .2s,opacity .2s}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:22px;height:2px;background:currentColor;border-radius:2px;transition:transform .2s,top .2s}
+.burger span::before{top:-7px}.burger span::after{top:7px}
+.burger[aria-expanded="true"] span{background:transparent}
+.burger[aria-expanded="true"] span::before{top:0;transform:rotate(45deg)}
+.burger[aria-expanded="true"] span::after{top:0;transform:rotate(-45deg)}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:min(320px,86vw);background:var(--card);color:var(--ink);z-index:30;transform:translateX(-102%);transition:transform .25s ease;overflow:auto;padding:1.2rem 1.1rem;padding-top:calc(1.2rem + env(safe-area-inset-top,0px));padding-bottom:calc(1.2rem + env(safe-area-inset-bottom,0px));box-shadow:0 0 0 1px var(--line)}
+.drawer.open{transform:none;box-shadow:12px 0 40px rgba(60,55,68,.3)}
+.drawer .brand{font-weight:800;font-size:1.1rem;line-height:1.2;margin:.2rem 0 1.4rem;padding-right:2.5rem}
+.drawer .brand small{display:block;font-weight:400;font-size:.85rem;color:var(--ink-2);margin-top:.3rem}
+.drawer .close{position:absolute;top:calc(.9rem + env(safe-area-inset-top,0px));right:.8rem;width:40px;height:40px;border:0;border-radius:10px;background:var(--panel);color:var(--ink);font-size:1.4rem;line-height:1;cursor:pointer}
+nav ol{list-style:none;margin:0;padding:0;max-width:none}
+nav li{margin:.35rem 0}
+nav a{display:flex;gap:.7rem;align-items:baseline;padding:.85rem .85rem;border-radius:10px;text-decoration:none;color:var(--ink-2);font-weight:600}
+nav a .n{font-variant-numeric:tabular-nums;width:1.2em;color:var(--ink-3);font-weight:700}
+nav a[aria-current="page"]{background:var(--powder);color:var(--navy);font-weight:800;box-shadow:inset 4px 0 0 var(--navy)}
+nav a[aria-current="page"] .n{color:var(--navy)}
+nav a:hover{background:var(--panel)}
+.progress{margin-top:1.4rem;padding:.9rem;background:var(--panel);border-radius:12px;font-size:.92rem;color:var(--ink-2)}
+.progress strong{color:var(--ink);font-variant-numeric:tabular-nums}
+.bar{height:7px;background:var(--panel-2);border-radius:4px;margin-top:.5rem;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--azure);transition:width .3s}
+.scrim{position:fixed;inset:0;background:rgba(60,55,68,.5);z-index:25;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.show{opacity:1;pointer-events:auto}
+body.menu-open{overflow:hidden}
+
+main{padding:2.5rem clamp(1.1rem,5vw,4rem) 4rem;max-width:960px;margin:0 auto;min-width:0}
+section[hidden]{display:none}
+.meta{display:flex;flex-wrap:wrap;gap:.5rem 1.4rem;color:var(--ink-2);margin:.5rem 0 2rem;font-size:.98rem}
+.meta span b{color:var(--ink);font-weight:800}
+.step-next{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 1.3rem;border-radius:12px;border:2px solid var(--btn);background:var(--btn);color:var(--btn-ink);font:inherit;font-weight:800;cursor:pointer;text-decoration:none}
+.btn.quiet{background:transparent;color:var(--ink);border-color:var(--ink-2)}
+.btn:hover{filter:brightness(1.08)}
+.lead{font-size:1.2rem;color:var(--ink-2)}
+.question{font-size:clamp(1.3rem,2.6vw,1.75rem);font-weight:800;line-height:1.3;padding:1.1rem 1.3rem;border-left:6px solid var(--azure);background:var(--card);border-radius:0 12px 12px 0;margin:1.5rem 0;max-width:none}
+.mark{background:var(--mark-bg);color:var(--mark-ink);font-weight:700;padding:.08em .3em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.callout{padding:1rem 1.2rem;border-radius:12px;background:var(--card);border:1px solid var(--line);margin:1.2rem 0;max-width:72ch}
+.callout.warn{background:var(--warn-bg);border-color:transparent;border-left:5px solid var(--graphite)}
+.callout.ok{background:var(--ok-bg);border-color:transparent;border-left:5px solid var(--azure)}
+.callout p:last-child{margin-bottom:0}
+table{border-collapse:collapse;width:100%;font-size:.97rem;background:var(--card)}
+.tablewrap{overflow-x:auto;margin:1rem 0 1.5rem;border:1px solid var(--line);border-radius:12px}
+th,td{text-align:left;vertical-align:top;padding:.7rem .8rem;border-bottom:1px solid var(--line)}
+th{background:var(--panel);font-weight:800}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ---------- tareas ---------- */
+.task{display:grid;grid-template-columns:3.2rem 1fr;gap:1rem;padding:1.4rem 0;border-top:1px solid var(--line)}
+.task:last-of-type{border-bottom:1px solid var(--line)}
+.task .num{font-size:2.4rem;font-weight:800;line-height:1;color:var(--azure)}
+.task h3{margin-top:.1em}
+.task .evid{margin-top:.8rem;padding:.7rem .9rem;background:var(--card);border:1px solid var(--line);border-radius:10px;font-size:.96rem;max-width:70ch}
+.task .evid b{display:block;margin-bottom:.2rem}
+
+/* ---------- proceso ---------- */
+.session{margin:1.8rem 0;padding:1.2rem 1.3rem;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.session h3{margin-top:0;display:flex;justify-content:space-between;gap:1rem;align-items:baseline;flex-wrap:wrap}
+.session h3 small{font-weight:400;font-size:.9rem;color:var(--ink-2)}
+.check{list-style:none;padding:0;margin:0;max-width:none}
+.check li{margin:0;border-top:1px dashed var(--line)}
+.check li:first-child{border-top:0}
+.check label{display:grid;grid-template-columns:1.6rem 1fr;gap:.8rem;padding:.75rem .2rem;cursor:pointer;align-items:start}
+.check input{width:1.25rem;height:1.25rem;margin:.2rem 0 0;accent-color:var(--azure)}
+.check .t{font-weight:700}
+.check .d{color:var(--ink-2);font-size:.96rem;margin-top:.15rem}
+.check input:checked ~ div .t{text-decoration:line-through;color:var(--ink-3)}
+.reset{font:inherit;font-size:.9rem;background:none;border:0;color:var(--ink-2);text-decoration:underline;cursor:pointer;padding:0}
+
+/* ---------- recursos ---------- */
+.res{padding:1rem 0;border-top:1px solid var(--line)}
+.res:last-child{border-bottom:1px solid var(--line)}
+.res h4{margin:0 0 .3rem}
+.res p{margin-bottom:.4rem}
+.res a.go{font-weight:800;color:var(--azure)}
+.tag{display:inline-block;font-size:.82rem;font-weight:600;padding:.1rem .6rem;border-radius:999px;background:var(--panel);color:var(--ink-2);margin-left:.4rem;vertical-align:middle}
+
+/* ---------- gráfico ---------- */
+.demo{margin:2rem 0;padding:1.3rem;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.demo .controls{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden}
+.seg button{font:inherit;font-weight:800;padding:.6rem 1rem;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.demo svg{width:100%;height:auto;display:block;background:var(--paper);border-radius:10px}
+.demo figcaption{margin-top:.8rem;font-size:.95rem;color:var(--ink-2)}
+.demo .verdict{font-weight:800;color:var(--ink);margin-bottom:.3rem}
+.demo .verdict.bad{color:var(--graphite)}
+.demo .verdict.good{color:var(--azure)}
+:root[data-theme="dark"] .demo .verdict.bad,:root:not([data-theme="light"]) .demo .verdict.bad{color:var(--warn)}
+.bar-fill{fill:var(--azure)}
+.bar-fill.cutmode{fill:var(--graphite)}
+.axis{stroke:var(--line)}
+.lbl{fill:var(--ink-2);font-size:12px;font-family:"Nunito Sans",system-ui,sans-serif}
+.val{fill:var(--ink);font-size:13px;font-weight:800;font-family:"Nunito Sans",system-ui,sans-serif}
+.cut{fill:none;stroke:var(--azure);stroke-width:2.5;stroke-dasharray:5 4}
+
+/* ---------- referencias ---------- */
+.refs{list-style:none;padding:0;max-width:80ch}
+.refs li{padding-left:2.2em;text-indent:-2.2em;margin:.7em 0;font-size:.97rem;overflow-wrap:anywhere}
+.refs a{overflow-wrap:anywhere}
+.placeholder{background:var(--powder);color:var(--navy);padding:.05em .35em;border-radius:4px;font-weight:800}
+
+@media (max-width:820px){
+  main{padding:1.5rem 1.1rem 3rem}
+  .task{grid-template-columns:1fr}
+  .task .num{font-size:1.6rem}
+  .top .where{display:none}
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) h1,:root:not([data-theme="light"]) h2,:root:not([data-theme="light"]) h3,:root:not([data-theme="light"]) h4,:root:not([data-theme="light"]) nav a[aria-current="page"],:root:not([data-theme="light"]) nav a[aria-current="page"] .n,:root:not([data-theme="light"]) .placeholder{color:var(--ivory)} :root:not([data-theme="light"]) nav a[aria-current="page"]{background:#262d52;box-shadow:inset 4px 0 0 var(--accent)} :root:not([data-theme="light"]) .placeholder{background:var(--azure)}}
+:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,:root[data-theme="dark"] h4,:root[data-theme="dark"] nav a[aria-current="page"],:root[data-theme="dark"] nav a[aria-current="page"] .n,:root[data-theme="dark"] .placeholder{color:var(--ivory)} :root[data-theme="dark"] nav a[aria-current="page"]{background:#262d52;box-shadow:inset 4px 0 0 var(--accent)} :root[data-theme="dark"] .placeholder{background:var(--azure)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="burger" id="burger" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Abrir menú de secciones"><span></span></button>
+  <div class="title">¿Nos engañan los gráficos?<small>WebQuest · Matemáticas · Grado 9.º</small></div>
+  <div class="where" id="where" aria-live="polite"></div>
+</header>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Menú de secciones">
+  <button class="close" id="close" type="button" aria-label="Cerrar menú">×</button>
+  <div class="brand">¿Nos engañan los gráficos?<small>Detectives de datos sobre la brecha digital en Colombia</small></div>
+  <nav aria-label="Secciones de la WebQuest">
+    <ol>
+      <li><a href="#introduccion" data-sec="introduccion"><span class="n">1</span>Introducción</a></li>
+      <li><a href="#tareas" data-sec="tareas"><span class="n">2</span>Tareas</a></li>
+      <li><a href="#proceso" data-sec="proceso"><span class="n">3</span>Proceso</a></li>
+      <li><a href="#recursos" data-sec="recursos"><span class="n">4</span>Recursos</a></li>
+      <li><a href="#evaluacion" data-sec="evaluacion"><span class="n">5</span>Evaluación</a></li>
+      <li><a href="#conclusiones" data-sec="conclusiones"><span class="n">6</span>Conclusiones</a></li>
+      <li><a href="#creditos" data-sec="creditos"><span class="n">7</span>Créditos</a></li>
+    </ol>
+  </nav>
+  <div class="progress" id="progress">
+    Avance del equipo en el Proceso: <strong id="pcount">0 de 10</strong> pasos
+    <div class="bar"><i id="pbar"></i></div>
+  </div>
+</aside>
+
+<main id="main">
+
+  <!-- ================= 1. INTRODUCCIÓN ================= -->
+  <section id="introduccion" aria-labelledby="h-intro">
+    <h1 id="h-intro">¿Nos engañan los gráficos?</h1>
+    <p class="lead">Detectives de datos sobre la brecha digital en Colombia</p>
+    <div class="meta">
+      <span><b>Grado 9.º</b> · Matemáticas</span>
+      <span><b>5 sesiones</b> de 55 minutos</span>
+      <span><b>Equipos de 4</b>, trabajo colaborativo</span>
+      <span><b>WebQuest</b> a corto plazo</span>
+    </div>
+
+    <h3>La situación</h3>
+    <p>El periódico digital del colegio prepara un especial sobre la brecha digital en Colombia y el uso de la tecnología en los hogares. A la redacción llegaron dos gráficos construidos con los mismos datos oficiales: uno parece mostrar un cambio espectacular y el otro transmite estabilidad. Ambos tienen cifras correctas, pero cuentan historias distintas.</p>
+    <p>La dirección del periódico necesita un equipo de detectives de datos capaz de decidir qué representación informa con rigor y cuál puede inducir a error.</p>
+
+    <h3>Pruébalo tú mismo</h3>
+    <p>Estos son datos reales del DANE: porcentaje de hogares con conexión a internet en cinco departamentos, 2024. Cambia el eje y observa qué pasa: ningún número se modifica.</p>
+
+    <figure class="demo" aria-describedby="demo-cap">
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Elegir cómo se dibuja el eje vertical">
+          <button type="button" id="b-full" aria-pressed="true">Eje desde 0</button>
+          <button type="button" id="b-cut" aria-pressed="false">Eje recortado</button>
+        </div>
+      </div>
+      <svg id="chart" viewBox="0 0 640 300" role="img" aria-labelledby="chart-title">
+        <title id="chart-title">Porcentaje de hogares con conexión a internet en cinco departamentos de Colombia, 2024</title>
+      </svg>
+      <figcaption id="demo-cap">
+        <div class="verdict" id="verdict"></div>
+        <div id="caption"></div>
+        <div>Fuente: DANE (2025), ENTIC Hogares 2024, Anexo C (indicadores del módulo TIC de la ECV 2024).</div>
+      </figcaption>
+    </figure>
+
+    <h3>El reto</h3>
+    <p>Con tu equipo deberás investigar qué decisiones de diseño pueden distorsionar la interpretación de datos, comprobarlo con información oficial del Departamento Administrativo Nacional de Estadística (DANE) y elaborar un producto digital que enseñe a otros estudiantes a detectar y corregir gráficos engañosos cuando se habla de conectividad y uso de tecnología en Colombia.</p>
+
+    <h3>La pregunta que debes responder</h3>
+    <p class="question">¿Puede un gráfico ser matemáticamente correcto y, aun así, inducir a una interpretación engañosa?</p>
+    <p>Al final tendrás que responderla <span class="mark">con evidencias numéricas y visuales</span>, no solo con una opinión.</p>
+
+    <div class="step-next"><a class="btn" href="#tareas" data-sec="tareas">Comenzar: ver las tareas</a></div>
+  </section>
+
+  <!-- ================= 2. TAREAS ================= -->
+  <section id="tareas" aria-labelledby="h-tareas" hidden>
+    <h2 id="h-tareas">Tareas</h2>
+    <p class="lead">La investigación se organiza en cuatro tareas de dificultad creciente. En todas hay que observar, contrastar, formular hipótesis, justificar decisiones y sacar conclusiones propias. Ninguna consiste en repetir un procedimiento.</p>
+
+    <article class="task">
+      <div class="num" aria-hidden="true">1</div>
+      <div>
+        <h3>Abrir el caso</h3>
+        <p>Antes de leer ninguna explicación, analiza con tu equipo los dos gráficos que les entrega el docente y formulen hipótesis: ¿qué elementos del dibujo pueden cambiar lo que una persona entiende? Después contrasten esas hipótesis con los recursos de Cultura Estadística del DANE y el material de Colombia Aprende para grado 9.º.</p>
+        <p>Uno de los gráficos iniciales puede venir del propio boletín del DANE, donde una diferencia entre cabeceras y zonas rurales se expresa en porcentaje cuando en realidad son puntos porcentuales. Un caso real para empezar a auditar.</p>
+        <p>El equipo sintetiza entre cinco y siete criterios para auditar un gráfico.</p>
+        <div class="evid"><b>Evidencia parcial</b>Lista razonada de criterios de auditoría con un ejemplo comentado.</div>
+      </div>
+    </article>
+
+    <article class="task">
+      <div class="num" aria-hidden="true">2</div>
+      <div>
+        <h3>Buscar evidencia colombiana</h3>
+        <p>Usa con tu equipo los anexos de la ENTIC Hogares 2024 del DANE para elegir un indicador sobre acceso o uso de internet, dispositivos o herramientas digitales. Comparen al menos cinco territorios si el cuadro tiene desagregación departamental, o comparen total nacional, cabeceras y centros poblados y rural disperso en al menos cinco indicadores.</p>
+        <p>Registren población de referencia, variable, unidad, año y la fuente exacta que indica el cuadro (ENTIC o módulo TIC de la ECV). Calculen e interpreten diferencias en puntos porcentuales, rango y, cuando tenga sentido, media o mediana. Decidan qué representación comunica mejor la información.</p>
+        <div class="callout warn"><p>La media de los porcentajes de varios departamentos <b>no</b> coincide con el porcentaje nacional, porque cada departamento tiene una población distinta. Si calculan una media, expliquen qué representa y por qué puede diferir del total.</p></div>
+        <div class="evid"><b>Evidencia parcial</b>Hoja de cálculo compartida con datos del DANE, cálculos justificados y un primer gráfico informativo.</div>
+      </div>
+    </article>
+
+    <article class="task">
+      <div class="num" aria-hidden="true">3</div>
+      <div>
+        <h3>Poner a prueba la representación</h3>
+        <p>Con los mismos datos, construye con tu equipo una segunda versión que pueda llevar a una interpretación distinta mediante una decisión visual identificable: eje truncado, selección parcial de territorios, orden intencional o un tipo de gráfico poco adecuado. Comparen ambas versiones y cuantifiquen por qué la impresión visual exagera, minimiza u oculta una diferencia.</p>
+        <p>La segunda versión se etiqueta siempre como <b>versión problemática</b> y sirve para aprender a detectar el engaño, no para producirlo. Intercambien el trabajo con otro equipo y sométanlo a una auditoría cruzada.</p>
+        <div class="evid"><b>Evidencia parcial</b>Pareja de gráficos "versión informativa / versión problemática", explicación matemática y coevaluación recibida.</div>
+      </div>
+    </article>
+
+    <article class="task">
+      <div class="num" aria-hidden="true">4</div>
+      <div>
+        <h3>Emitir el veredicto</h3>
+        <p>Revisa con tu equipo el análisis a partir de la retroalimentación recibida y elaboren el producto final: una infografía interactiva o presentación digital titulada <b>Manual antiengaño estadístico: así se cuenta la brecha digital en Colombia</b>, con enlace a la hoja de cálculo.</p>
+        <div class="evid"><b>Evidencia final</b>El producto digital más la hoja de cálculo.</div>
+      </div>
+    </article>
+
+    <h3>Lo que debe tener el producto final</h3>
+    <ol type="a">
+      <li>Respuesta argumentada a la pregunta guía.</li>
+      <li>Referencia completa al conjunto de datos (cuadro o anexo del DANE).</li>
+      <li>Dos gráficos hechos con los mismos datos y una comparación crítica entre ellos.</li>
+      <li>Al menos tres evidencias numéricas interpretadas.</li>
+      <li>Explicación de tres decisiones de diseño y su efecto en la percepción.</li>
+      <li>Un decálogo o lista de seis recomendaciones de visualización responsable.</li>
+      <li>Una limitación del propio análisis.</li>
+      <li>Créditos de recursos e imágenes.</li>
+    </ol>
+
+    <div class="step-next"><a class="btn" href="#proceso" data-sec="proceso">Siguiente: el proceso paso a paso</a></div>
+  </section>
+
+  <!-- ================= 3. PROCESO ================= -->
+  <section id="proceso" aria-labelledby="h-proceso" hidden>
+    <h2 id="h-proceso">Proceso</h2>
+    <p class="lead">Cinco sesiones. Marca cada paso cuando tu equipo lo termine: el avance se guarda en este dispositivo.</p>
+
+    <div class="callout">
+      <p><b>Cómo se organizan.</b> Esta WebQuest se desarrolla mediante <b>aprendizaje colaborativo</b>. El docente forma equipos heterogéneos de cuatro integrantes y acompaña el trabajo como facilitador. El equipo decide cómo repartirse las acciones y puede reorganizarse a medida que avanza. No hay roles fijos asignados por el docente. Si hace falta que alguien presente al final, lo elige el propio equipo.</p>
+    </div>
+
+    <div class="session">
+      <h3>Sesión 1 <small>Abrir el caso</small></h3>
+      <ul class="check">
+        <li><label><input type="checkbox" data-step="s1a"><div><div class="t">Activación (10 min)</div><div class="d">Observen los dos gráficos iniciales y escriban una primera respuesta a la pregunta guía. Anoten qué les genera confianza y qué les genera sospecha.</div></div></label></li>
+        <li><label><input type="checkbox" data-step="s1b"><div><div class="t">Investigación guiada (35 min)</div><div class="d">Consulten los recursos 1, 2 y 3. Contrasten sus hipótesis y construyan la lista común de criterios de auditoría. Cierren con una socialización breve.</div></div></label></li>
+      </ul>
+    </div>
+
+    <div class="session">
+      <h3>Sesión 2 <small>Buscar evidencia</small></h3>
+      <ul class="check">
+        <li><label><input type="checkbox" data-step="s2a"><div><div class="t">Selección de datos</div><div class="d">Entren al recurso 4 (DANE, ENTIC Hogares 2024), escojan un cuadro pertinente y anoten población de referencia, variable, unidad, año, territorio y la fuente exacta del cuadro. Copien a la hoja de cálculo compartida solo los datos que necesitan.</div></div></label></li>
+        <li><label><input type="checkbox" data-step="s2b"><div><div class="t">Exploración</div><div class="d">Representen provisionalmente los datos y decidan qué medidas y comparaciones aportan evidencia útil: diferencias en puntos porcentuales, rango, media o mediana cuando proceda. No se valora calcular por calcular: cada medida va con una frase que explique qué aporta. Recuerden la advertencia sobre la media de porcentajes.</div></div></label></li>
+      </ul>
+    </div>
+
+    <div class="session">
+      <h3>Sesión 3 <small>Representar y contrastar</small></h3>
+      <ul class="check">
+        <li><label><input type="checkbox" data-step="s3a"><div><div class="t">Visualización</div><div class="d">Elaboren el gráfico que el equipo considera más fiel y justifiquen tipo de gráfico, escala, etiquetas y periodo. Usen los recursos 5 y 6 para revisar opciones.</div></div></label></li>
+        <li><label><input type="checkbox" data-step="s3b"><div><div class="t">Contraste</div><div class="d">Creen la segunda versión a partir de los mismos datos cambiando una decisión visual. Expliquen con números cómo ese cambio altera la percepción sin cambiar los datos.</div></div></label></li>
+      </ul>
+    </div>
+
+    <div class="session">
+      <h3>Sesión 4 <small>Auditar e iniciar el producto</small></h3>
+      <ul class="check">
+        <li><label><input type="checkbox" data-step="s4a"><div><div class="t">Auditoría cruzada</div><div class="d">Intercambien ambos gráficos con otro equipo. El equipo revisor aplica la lista de criterios de la tarea 1, identifica posibles sesgos y formula dos recomendaciones concretas. El equipo autor decide qué cambios acepta y justifica la decisión.</div></div></label></li>
+        <li><label><input type="checkbox" data-step="s4b"><div><div class="t">Revisión docente e inicio del producto (25 min)</div><div class="d">Presenten al docente la fuente, la hoja de cálculo y el argumento central. El docente orienta con preguntas y comprueba que la conclusión esté respaldada por datos. Con esa retroalimentación, definan la estructura del producto final y empiecen a elaborarlo.</div></div></label></li>
+      </ul>
+    </div>
+
+    <div class="session">
+      <h3>Sesión 5 <small>Emitir el veredicto</small></h3>
+      <ul class="check">
+        <li><label><input type="checkbox" data-step="s5a"><div><div class="t">Producto final (35 min)</div><div class="d">Terminen la infografía o presentación, incorporen las correcciones de la auditoría cruzada y de la revisión docente, y añadan las referencias. Preparen una síntesis de dos minutos centrada en la pregunta guía y en una evidencia numérica.</div></div></label></li>
+        <li><label><input type="checkbox" data-step="s5b"><div><div class="t">Cierre (20 min)</div><div class="d">Síntesis breve de cada equipo, coevaluación y autoevaluación. Las preguntas de metacognición de la sección Conclusiones se responden de forma individual después de la sesión, en formato digital o impreso.</div></div></label></li>
+      </ul>
+    </div>
+
+    <p><button type="button" class="reset" id="reset">Reiniciar el avance en este dispositivo</button></p>
+
+    <div class="step-next"><a class="btn" href="#recursos" data-sec="recursos">Siguiente: los recursos</a></div>
+  </section>
+
+  <!-- ================= 4. RECURSOS ================= -->
+  <section id="recursos" aria-labelledby="h-recursos" hidden>
+    <h2 id="h-recursos">Recursos</h2>
+    <p class="lead">Ninguno de estos recursos contiene por sí solo la respuesta al reto. Están agrupados por la tarea en la que se usan y cada uno indica para qué sirve.</p>
+
+    <h3>Para la tarea 1: abrir el caso</h3>
+    <div class="res">
+      <h4>1. DANE — Cultura Estadística: nivel principiante</h4>
+      <p>Para reconocer los componentes de una gráfica, interpretar porcentajes y ver el efecto de un eje que no empieza en cero.</p>
+      <a class="go" href="https://www.dane.gov.co/index.php/cultura-estadistica/camino-hacia-la-cultura-estadistica/nivel-principiante" target="_blank" rel="noopener">Acceder al recurso</a>
+    </div>
+    <div class="res">
+      <h4>2. DANE — Cultura Estadística: nivel medio</h4>
+      <p>Para interpretar datos en contexto, diferenciar porcentajes de puntos porcentuales y cuestionar conclusiones sin suficiente contexto.</p>
+      <a class="go" href="https://www.dane.gov.co/index.php/cultura-estadistica/camino-hacia-la-cultura-estadistica/nivel-medio" target="_blank" rel="noopener">Acceder al recurso</a>
+    </div>
+    <div class="res">
+      <h4>3. Colombia Aprende — Evaluación y confianza del análisis estadístico</h4>
+      <p>Contenido de grado 9.º para valorar críticamente resultados y conclusiones estadísticas.</p>
+      <a class="go" href="https://colombiaaprende.edu.co/contenidos-para-aprender/evaluacion-y-confianza-del-analisis-estadistico" target="_blank" rel="noopener">Acceder al recurso</a>
+    </div>
+
+    <h3>Para la tarea 2: buscar evidencia</h3>
+    <div class="res">
+      <h4>4. DANE — ENTIC Hogares 2024</h4>
+      <p>Fuente oficial para seleccionar datos sobre acceso y uso de TIC en Colombia, con resultados nacionales, urbano-rurales y departamentales en sus anexos.</p>
+      <div class="callout"><p>Los cuadros del Anexo C (indicadores básicos con desagregación departamental) provienen del módulo TIC de la Encuesta Nacional de Calidad de Vida 2024 y se publican junto con los resultados de la ENTIC. Registren siempre la fuente exacta que indica cada cuadro.</p></div>
+      <a class="go" href="https://www.dane.gov.co/index.php/estadisticas-por-tema/tecnologia-e-innovacion/tecnologias-de-la-informacion-y-las-comunicaciones-tic/encuesta-de-tecnologias-de-la-informacion-y-las-comunicaciones-en-hogares-entic-hogares" target="_blank" rel="noopener">Acceder al recurso</a>
+    </div>
+
+    <h3>Para la tarea 3: representar y contrastar</h3>
+    <div class="res">
+      <h4>5. Colombia Aprende — Matemáticas 9, Aulas sin Fronteras: guía del estudiante, bimestre II</h4>
+      <p>Material oficial de grado 9.º con gráficos construidos a partir de datos reales de Colombia. Las clases 13 a 15 (páginas 34 a 41) muestran cómo pasar de tablas a gráficos, cómo leer un diagrama de barras, de líneas, un pictograma o un histograma, y qué conclusiones se pueden sacar de cada uno. La actividad 56 (página 73) compara dos grupos con el mismo tipo de gráfico. Es un PDF; puedes descargarlo una sola vez y compartirlo con tu equipo.</p>
+      <a class="go" href="https://colombiaaprende.edu.co/sites/default/files/files_public/2021-12/MAT_9_B2_EST_WEB_COMPLETO.pdf" target="_blank" rel="noopener">Acceder al recurso (PDF)</a>
+    </div>
+    <div class="res">
+      <h4>6. Ayuda de Google — Tipos de gráfico en Hojas de cálculo</h4>
+      <p>Apoyo técnico para construir, editar y comparar gráficos en una herramienta colaborativa.</p>
+      <a class="go" href="https://support.google.com/docs/answer/190718?hl=es" target="_blank" rel="noopener">Acceder al recurso</a>
+    </div>
+
+    <h3>Plantillas que recibirán</h3>
+    <p>Para que el tiempo se dedique a pensar y no al formato, tu equipo recibirá tres plantillas listas:</p>
+    <ul>
+      <li>Una hoja de cálculo compartida con columnas para fuente, variable, unidad, periodo, datos y cálculos, y con el recordatorio sobre la media de porcentajes territoriales.</li>
+      <li>La lista de auditoría gráfica, que completarán con sus propios criterios en la tarea 1.</li>
+      <li>La ficha de coevaluación para la auditoría cruzada de la sesión 4.</li>
+    </ul>
+    <p>Las plantillas ordenan el trabajo; la conclusión la construye el equipo.</p>
+
+    <div class="step-next"><a class="btn" href="#evaluacion" data-sec="evaluacion">Siguiente: cómo se evalúa</a></div>
+  </section>
+
+  <!-- ================= 5. EVALUACIÓN ================= -->
+  <section id="evaluacion" aria-labelledby="h-eval" hidden>
+    <h2 id="h-eval">Evaluación</h2>
+    <p class="lead">La evaluación acompaña todo el proceso: empieza con un diagnóstico que no califica, sigue con retroalimentación formativa y termina con la valoración del docente, la de otro equipo y la de cada estudiante.</p>
+
+    <h3>Momentos</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Momento</th><th>Instrumento</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>Inicial, diagnóstica</td><td>Hipótesis inicial sobre los dos gráficos</td><td>Conocer las ideas previas sobre confiabilidad, escala y lectura de gráficos.</td></tr>
+        <tr><td>Formativa</td><td>Lista de chequeo del docente, revisión de la hoja de cálculo y retroalimentación entre equipos</td><td>Detectar errores de interpretación, fuente o visualización antes del producto final.</td></tr>
+        <tr><td>Final</td><td>Rúbrica del producto, coevaluación y autoevaluación</td><td>Valorar razonamiento matemático, calidad de la investigación, comunicación, colaboración y reflexión.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Cómo se compone la nota</h3>
+    <div class="tablewrap"><table>
+      <tbody>
+        <tr><td>Evaluación del docente (heteroevaluación)</td><td class="num">80 %</td></tr>
+        <tr><td>Coevaluación entre equipos</td><td class="num">10 %</td></tr>
+        <tr><td>Autoevaluación individual</td><td class="num">10 %</td></tr>
+      </tbody>
+    </table></div>
+    <p>La evaluación inicial y los dos puntos de control formativo no suman puntos por sí mismos, pero permiten corregir el trabajo antes de la entrega.</p>
+
+    <h3>Rúbrica del producto</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Criterio</th><th>Qué se espera</th><th class="num">Peso</th></tr></thead>
+      <tbody>
+        <tr><td>Rigor matemático</td><td>Datos bien interpretados; medidas o variaciones pertinentes y explicadas; comparación numérica coherente entre las dos representaciones.</td><td class="num">30 %</td></tr>
+        <tr><td>Investigación y fuentes</td><td>Fuente oficial bien identificada; selección de datos pertinente; contraste de recursos y referencias trazables.</td><td class="num">20 %</td></tr>
+        <tr><td>Pensamiento crítico</td><td>Explica por qué una decisión gráfica puede alterar la percepción; diferencia dato, representación e interpretación; reconoce límites.</td><td class="num">20 %</td></tr>
+        <tr><td>Producto y comunicación digital</td><td>Respuesta clara a la pregunta guía, gráficos legibles, estructura coherente, lenguaje matemático adecuado y referencias.</td><td class="num">20 %</td></tr>
+        <tr><td>Colaboración y autonomía</td><td>Participación equilibrada, escucha, decisiones compartidas, cumplimiento de acuerdos y uso constructivo de la retroalimentación.</td><td class="num">10 %</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Escala común de desempeño</h3>
+    <div class="tablewrap"><table>
+      <tbody>
+        <tr><td class="num">4</td><td>Evidencia completa, rigurosa, bien justificada y autónoma.</td></tr>
+        <tr><td class="num">3</td><td>Evidencia correcta con pequeñas omisiones.</td></tr>
+        <tr><td class="num">2</td><td>Evidencia parcial o poco argumentada.</td></tr>
+        <tr><td class="num">1</td><td>Evidencia insuficiente, incorrecta o solo descriptiva.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout ok">
+      <p><b>Coevaluación:</b> una fortaleza, una evidencia concreta y una mejora accionable para el equipo revisado.</p>
+      <p><b>Autoevaluación:</b> justificar tu propio aporte al equipo con un ejemplo.</p>
+    </div>
+
+    <div class="step-next"><a class="btn" href="#conclusiones" data-sec="conclusiones">Siguiente: conclusiones</a></div>
+  </section>
+
+  <!-- ================= 6. CONCLUSIONES ================= -->
+  <section id="conclusiones" aria-labelledby="h-conc" hidden>
+    <h2 id="h-conc">Conclusiones</h2>
+    <p class="lead">Una visualización no es una copia neutral de los datos.</p>
+    <p>Al terminar esta WebQuest deberías poder explicar que <span class="mark">la elección del tipo de gráfico, la escala, el rango temporal, las etiquetas y el contexto influyen en la interpretación</span>. También deberías ser capaz de verificar una afirmación con datos de una fuente confiable, comparar representaciones, argumentar con medidas estadísticas y comunicar conclusiones de forma responsable.</p>
+
+    <h3>Para pensar sobre lo que hiciste</h3>
+    <p>Responde estas preguntas de forma individual después de la sesión 5, en el formato que indique el docente.</p>
+    <ol>
+      <li>¿Qué creías al principio sobre la confiabilidad de un gráfico y qué cambió después de investigar?</li>
+      <li>¿Qué decisión matemática o visual fue más difícil de justificar y qué evidencia usaste para resolverla?</li>
+      <li>¿En qué momento detectaste un error o una interpretación débil? ¿Qué hiciste para corregirla?</li>
+      <li>¿Qué aporte concreto de otro integrante cambió o mejoró la conclusión de tu equipo?</li>
+      <li>¿Qué criterio usarías primero si mañana vieras un gráfico llamativo en una red social o en un medio de comunicación? ¿Por qué?</li>
+      <li>¿Qué limitación tiene el análisis de tu equipo y qué dato adicional necesitarían para fortalecerlo?</li>
+      <li>Si repitieras la investigación, ¿qué cambiarías en la organización del equipo o en el uso de las herramientas digitales?</li>
+      <li>Describe una situación distinta, fuera de esta actividad, en la que podrías aplicar lo aprendido sobre lectura crítica de datos.</li>
+    </ol>
+
+
+    
+
+    <h3>Para el docente que aplique esta WebQuest: reflexión crítica sobre la propuesta</h3> <p>Las preguntas anteriores son para los estudiantes. Lo que sigue es la valoración del autor sobre la experiencia de aprendizaje, pensada para quien quiera llevar esta propuesta a su aula.</p> <div class="callout"> <p><b>Fortalezas.</b> La WebQuest sitúa a los estudiantes ante un problema reconocible —la interpretación de gráficos en medios y redes— y utiliza datos oficiales de la realidad colombiana en lugar de ejercicios descontextualizados (MEN, 2006, 2016a). La comparación entre una representación informativa y otra problemática obliga a conectar cálculo, interpretación y comunicación. El trabajo colaborativo favorece el contraste de argumentos y la revisión entre pares, mientras que la hoja de cálculo permite modificar representaciones y observar inmediatamente sus efectos.</p> <p><b>Limitaciones y riesgos.</b> La actividad exige un nivel mínimo de competencia digital y puede hacer que algunos equipos se concentren en la estética del producto antes que en el razonamiento matemático. También existe el riesgo de seleccionar demasiados datos, emplear medidas sin una finalidad interpretativa o encontrar desigualdades de acceso a dispositivos y conectividad. Las interfaces de las fuentes externas pueden cambiar, por lo que los enlaces deben comprobarse antes de aplicar la actividad.</p> <p><b>Medidas de mejora.</b> Para reducir estos riesgos se proporcionan plantillas, se limita el volumen de datos, se exige justificar cada cálculo y se incorporan puntos de control formativo antes de la entrega. Si la conectividad es limitada, el docente puede descargar previamente los anexos del DANE y facilitar los datos en formato digital o impreso sin modificar el reto cognitivo. En futuras aplicaciones conviene registrar los conceptos que generan más errores, ajustar la complejidad de los datos y revisar la rúbrica a partir de evidencias de aplicación.</p> <p><b>Transferencia.</b> El aprendizaje es transferible a noticias, publicidad, redes sociales y otras materias: los estudiantes adquieren un procedimiento para preguntar quién produjo los datos, qué se compara, qué decisiones de representación se tomaron y si la conclusión está realmente respaldada por la evidencia.</p> </div>
+
+    <div class="step-next"><a class="btn" href="#creditos" data-sec="creditos">Siguiente: créditos</a></div>
+  </section>
+
+  <!-- ================= 7. CRÉDITOS ================= -->
+  <section id="creditos" aria-labelledby="h-cred" hidden>
+    <h2 id="h-cred">Créditos</h2>
+    <p>Esta WebQuest fue diseñada por <b>Carlos Martínez</b>.</p>
+    <p><b>Referentes curriculares.</b> La propuesta se enmarca en la Ley 115 de 1994 y en los referentes del Ministerio de Educación Nacional para grado 9.º: los Estándares Básicos de Competencias del grupo 8.º-9.º en pensamiento aleatorio y sistemas de datos (MEN, 2006) y el DBA 10 de Matemáticas, versión 2 (MEN, 2016a), que pide comparar las distribuciones de dos grupos de datos con medidas de tendencia central, variación y localización. Su aplicación en un colegio concreto se articula con el PEI y el plan de área (Decreto 1075 de 2015).</p>
+    <p><b>Gráficos:</b> elaboración propia.</p>
+
+    <h3>Referencias</h3>
+    <ul class="refs">
+      <li>Congreso de la República de Colombia. (1994). <i>Ley 115 de 1994, por la cual se expide la Ley General de Educación</i>. <a href="https://www.mineducacion.gov.co/1759/articles-85906_archivo_pdf.pdf" target="_blank" rel="noopener">https://www.mineducacion.gov.co/1759/articles-85906_archivo_pdf.pdf</a></li>
+      <li>Departamento Administrativo Nacional de Estadística. (2025). <i>Encuesta de Tecnologías de la Información y las Comunicaciones en Hogares (ENTIC Hogares) 2024</i>. <a href="https://www.dane.gov.co/index.php/estadisticas-por-tema/tecnologia-e-innovacion/tecnologias-de-la-informacion-y-las-comunicaciones-tic/encuesta-de-tecnologias-de-la-informacion-y-las-comunicaciones-en-hogares-entic-hogares" target="_blank" rel="noopener">https://www.dane.gov.co/index.php/estadisticas-por-tema/tecnologia-e-innovacion/tecnologias-de-la-informacion-y-las-comunicaciones-tic/encuesta-de-tecnologias-de-la-informacion-y-las-comunicaciones-en-hogares-entic-hogares</a></li>
+      <li>Departamento Administrativo Nacional de Estadística. (s. f.-a). <i>Cultura Estadística: nivel principiante / Aprendiz</i>. <a href="https://www.dane.gov.co/index.php/cultura-estadistica/camino-hacia-la-cultura-estadistica/nivel-principiante" target="_blank" rel="noopener">https://www.dane.gov.co/index.php/cultura-estadistica/camino-hacia-la-cultura-estadistica/nivel-principiante</a></li>
+      <li>Departamento Administrativo Nacional de Estadística. (s. f.-b). <i>Cultura Estadística: nivel medio / Estudiante</i>. <a href="https://www.dane.gov.co/index.php/cultura-estadistica/camino-hacia-la-cultura-estadistica/nivel-medio" target="_blank" rel="noopener">https://www.dane.gov.co/index.php/cultura-estadistica/camino-hacia-la-cultura-estadistica/nivel-medio</a></li>
+      <li>Decreto 1075 de 2015 [Ministerio de Educación Nacional]. <i>Por medio del cual se expide el Decreto Único Reglamentario del Sector Educación</i>. 26 de mayo de 2015. <a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=77913" target="_blank" rel="noopener">https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=77913</a></li>
+      <li>Google. (s. f.). <i>Tipos de gráfico de Hojas de cálculo de Google</i>. Ayuda de Editores de Documentos de Google. <a href="https://support.google.com/docs/answer/190718?hl=es" target="_blank" rel="noopener">https://support.google.com/docs/answer/190718?hl=es</a></li>
+      <li>Ministerio de Educación Nacional. (1998). <i>Lineamientos curriculares: Matemáticas</i>. <a href="https://www.mineducacion.gov.co/1780/articles-339975_matematicas.pdf" target="_blank" rel="noopener">https://www.mineducacion.gov.co/1780/articles-339975_matematicas.pdf</a></li>
+      <li>Ministerio de Educación Nacional. (2006). <i>Estándares básicos de competencias en Lenguaje, Matemáticas, Ciencias y Ciudadanas: lo que los estudiantes deben saber y saber hacer con lo que aprenden</i>. <a href="https://www.mineducacion.gov.co/1621/articles-116042_archivo_pdf2.pdf" target="_blank" rel="noopener">https://www.mineducacion.gov.co/1621/articles-116042_archivo_pdf2.pdf</a></li>
+      <li>Ministerio de Educación Nacional. (2016a). <i>Derechos básicos de aprendizaje: Matemáticas (v. 2)</i>. <a href="https://www.colombiaaprende.edu.co/sites/default/files/files_public/2022-06/DBA_Matematicas-min.pdf" target="_blank" rel="noopener">https://www.colombiaaprende.edu.co/sites/default/files/files_public/2022-06/DBA_Matematicas-min.pdf</a></li>
+      <li>Ministerio de Educación Nacional. (2016b). <i>Evaluación y confianza del análisis estadístico</i>. Colombia Aprende. <a href="https://colombiaaprende.edu.co/contenidos-para-aprender/evaluacion-y-confianza-del-analisis-estadistico" target="_blank" rel="noopener">https://colombiaaprende.edu.co/contenidos-para-aprender/evaluacion-y-confianza-del-analisis-estadistico</a></li>
+      <li>Ministerio de Educación Nacional. (2018). <i>Aulas sin fronteras: Matemáticas 9. Guía del estudiante, segundo bimestre</i>. Colombia Aprende. <a href="https://colombiaaprende.edu.co/sites/default/files/files_public/2021-12/MAT_9_B2_EST_WEB_COMPLETO.pdf" target="_blank" rel="noopener">https://colombiaaprende.edu.co/sites/default/files/files_public/2021-12/MAT_9_B2_EST_WEB_COMPLETO.pdf</a></li>
+    </ul>
+
+    <div class="step-next"><a class="btn quiet" href="#introduccion" data-sec="introduccion">Volver al inicio</a></div>
+  </section>
+
+  </main>
+
+<script>
+(function(){
+  /* ---------- navegación por secciones ---------- */
+  var ids=['introduccion','tareas','proceso','recursos','evaluacion','conclusiones','creditos'];
+  var links=document.querySelectorAll('nav a[data-sec]');
+  var names={introduccion:'1 · Introducción',tareas:'2 · Tareas',proceso:'3 · Proceso',recursos:'4 · Recursos',evaluacion:'5 · Evaluación',conclusiones:'6 · Conclusiones',creditos:'7 · Créditos'};
+  var drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim'),burger=document.getElementById('burger');
+  function openMenu(){drawer.classList.add('open');scrim.classList.add('show');burger.setAttribute('aria-expanded','true');burger.setAttribute('aria-label','Cerrar menú de secciones');document.body.classList.add('menu-open');var cur=drawer.querySelector('nav a[aria-current]')||drawer.querySelector('nav a');if(cur)cur.focus();}
+  function closeMenu(){drawer.classList.remove('open');scrim.classList.remove('show');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-label','Abrir menú de secciones');document.body.classList.remove('menu-open');}
+  burger.addEventListener('click',function(){drawer.classList.contains('open')?closeMenu():openMenu();});
+  document.getElementById('close').addEventListener('click',function(){closeMenu();burger.focus();});
+  scrim.addEventListener('click',closeMenu);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&drawer.classList.contains('open')){closeMenu();burger.focus();}});
+  function show(id,scroll){
+    if(ids.indexOf(id)<0) id='introduccion';
+    ids.forEach(function(s){document.getElementById(s).hidden=(s!==id);});
+    links.forEach(function(a){
+      if(a.getAttribute('data-sec')===id) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+    });
+    document.getElementById('where').textContent=names[id]||'';
+    closeMenu();
+    if(scroll){ window.scrollTo({top:0,behavior:'auto'}); }
+    var h=document.getElementById(id).querySelector('h1,h2'); if(h){h.setAttribute('tabindex','-1'); if(scroll) h.focus({preventScroll:true});}
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[data-sec]'); if(!a) return;
+    e.preventDefault(); var id=a.getAttribute('data-sec');
+    if(location.hash!=='#'+id) history.pushState(null,'','#'+id);
+    show(id,true);
+  });
+  window.addEventListener('popstate',function(){show(location.hash.replace('#',''),true);});
+  show(location.hash.replace('#','')||'introduccion',false);
+
+  /* ---------- lista de pasos (guardado local) ---------- */
+  var KEY='wq-brecha-digital-pasos';
+  var boxes=document.querySelectorAll('input[data-step]');
+  var saved={};
+  try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(err){ saved={}; }
+  boxes.forEach(function(b){ b.checked=!!saved[b.getAttribute('data-step')]; });
+  function update(){
+    var n=0; boxes.forEach(function(b){ if(b.checked) n++; });
+    document.getElementById('pcount').textContent=n+' de '+boxes.length;
+    document.getElementById('pbar').style.width=(100*n/boxes.length)+'%';
+  }
+  boxes.forEach(function(b){ b.addEventListener('change',function(){
+    saved[b.getAttribute('data-step')]=b.checked;
+    try{ localStorage.setItem(KEY,JSON.stringify(saved)); }catch(err){}
+    update();
+  });});
+  document.getElementById('reset').addEventListener('click',function(){
+    saved={}; boxes.forEach(function(b){b.checked=false;});
+    try{ localStorage.removeItem(KEY); }catch(err){}
+    update();
+  });
+  update();
+
+  /* ---------- gráfico: mismos datos, dos ejes ---------- */
+  /* DANE, ENTIC Hogares 2024, Anexo C: hogares con conexión a internet (%), 2024 */
+  var data=[
+    {d:'Quindío',v:63.4},
+    {d:'Cesar',v:64.5},
+    {d:'Santander',v:65.2},
+    {d:'Antioquia',v:66.9},
+    {d:'Huila',v:70.8}
+  ];
+  var svg=document.getElementById('chart');
+  var NS='http://www.w3.org/2000/svg';
+  function el(n,attrs,txt){var e=document.createElementNS(NS,n);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e;}
+  function fmt(x){return x.toFixed(1).replace('.',',');}
+  function draw(cut){
+    while(svg.childNodes.length>1) svg.removeChild(svg.lastChild);
+    var W=640,H=300,L=56,R=20,T=22,B=48;
+    var ymin=cut?62:0, ymax=cut?72:100;
+    var pw=W-L-R, ph=H-T-B;
+    var y=function(v){return T+ph*(1-(v-ymin)/(ymax-ymin));};
+    var ticks=cut?[62,64,66,68,70,72]:[0,20,40,60,80,100];
+    ticks.forEach(function(t){
+      svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(t),y2:y(t),'class':'axis'}));
+      svg.appendChild(el('text',{x:L-8,y:y(t)+4,'text-anchor':'end','class':'lbl'},t+' %'));
+    });
+    var bw=pw/data.length, barw=bw*0.56;
+    data.forEach(function(p,i){
+      var x=L+bw*i+(bw-barw)/2, yy=y(p.v);
+      svg.appendChild(el('rect',{x:x,y:yy,width:barw,height:(T+ph)-yy,rx:3,'class':cut?'bar-fill cutmode':'bar-fill'}));
+      svg.appendChild(el('text',{x:x+barw/2,y:yy-6,'text-anchor':'middle','class':'val'},fmt(p.v)+' %'));
+      svg.appendChild(el('text',{x:x+barw/2,y:H-B+18,'text-anchor':'middle','class':'lbl'},p.d));
+    });
+    if(cut){
+      svg.appendChild(el('line',{x1:L,x2:W-R,y1:T+ph,y2:T+ph,'class':'cut'}));
+      svg.appendChild(el('text',{x:L,y:H-6,'class':'lbl'},'Ojo: el eje empieza en 62 %, no en 0 %'));
+    }
+    var hi=data[data.length-1], lo=data[0];
+    var diff=hi.v-lo.v;
+    var ratioReal=hi.v/lo.v;
+    var ratioVisual=cut?((hi.v-ymin)/(lo.v-ymin)):ratioReal;
+    var v=document.getElementById('verdict'), c=document.getElementById('caption');
+    if(cut){
+      v.className='verdict bad';
+      v.textContent='Versión problemática: los mismos números parecen muy distintos.';
+      c.textContent='La barra de '+hi.d+' se ve '+fmt(ratioVisual)+' veces más alta que la de '+lo.d+', pero la diferencia real es de '+fmt(diff)+' puntos porcentuales ('+fmt(hi.v)+' % frente a '+fmt(lo.v)+' %). El dibujo exagera la diferencia unas '+fmt(ratioVisual/ratioReal)+' veces.';
+    }else{
+      v.className='verdict good';
+      v.textContent='Versión informativa: la altura de cada barra es proporcional al dato.';
+      c.textContent='Entre '+lo.d+' ('+fmt(lo.v)+' %) y '+hi.d+' ('+fmt(hi.v)+' %) hay '+fmt(diff)+' puntos porcentuales de diferencia. '+hi.d+' tiene '+fmt(ratioReal)+' veces el porcentaje de '+lo.d+', y eso es exactamente lo que se ve.';
+    }
+    document.getElementById('b-full').setAttribute('aria-pressed',String(!cut));
+    document.getElementById('b-cut').setAttribute('aria-pressed',String(cut));
+  }
+  document.getElementById('b-full').addEventListener('click',function(){draw(false);});
+  document.getElementById('b-cut').addEventListener('click',function(){draw(true);});
+  draw(false);
+})();
+</script>
+</body>
+</html>
